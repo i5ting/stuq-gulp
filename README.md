@@ -8,9 +8,9 @@
 
 本次主要讲3部分
 
-- 什么gulp和核心概念、用法
-- 以微信前端组的weui为例子，讲解gulp在真实项目里如何使用（包括浏览器实时刷新，watch，less编译，压缩，生成sourcemap、release等）
-- 最后讲解一下stream原理，给出更多实践
+- 1)什么gulp和核心概念、用法
+- 2)以微信前端组的weui为例子，讲解gulp在真实项目里如何使用（包括浏览器实时刷新，watch，less编译，压缩，生成sourcemap、release等）
+- 3)最后讲解一下stream原理，给出更多实践
 
 ## 什么是gulp？
 
@@ -36,9 +36,9 @@ make是通过makefile文件来描述源程序之间的相互关系并自动维�
 
 它们的共同特点
 
-- 基于task，定义简单
-- task有串行，并行，作业依赖等控制方式
-- 通过xxxfile来定义task
+- 1)基于task，定义简单
+- 2)task有串行，并行，作业依赖等控制方式
+- 3)通过xxxfile来定义task
 
 如此看来，nodejs的构建系统也应该是这样的，可以说gulp是node世界里和上面几个构建工具最像的一个，它们太像了，以至于学习起来特别简单
 
@@ -77,7 +77,7 @@ gulp.task('default', function() {
 
 gulpfile和makefile、build.xml等是类似的，定义task的地方。
 
-定义好task，下面运行一些
+定义好task，下面运行一下
 
 ### 3. 运行 gulp：
 
@@ -108,11 +108,13 @@ nodejs里sails的因为基于grunt被鄙视，ionic里也是，好在ionic现在
 ## why gulp？
 
 
-前端本身就对js非常了解，gulp可以说是plain js，语法都再简单不过，所以大家比较容易接受
+前端本身就对js非常了解，gulp可以说是plain 
+js，语法都再简单不过，所以大家比较容易接受
 
-### 基于nodejs
 
-而且基本nodejs的小而美哲学，写gulp task是件很愉快的事儿
+### 1. 基于nodejs
+
+基于nodejs的小而美哲学，写gulp task是件很愉快的事儿
 
 而且还可以结合nodejs世界里最好的包管理器npm，写cli或者模块特别简单
 
@@ -120,23 +122,23 @@ nodejs里sails的因为基于grunt被鄙视，ionic里也是，好在ionic现在
 
 而且还有shelljs这样的库，结合shell，给你无限可能
 
-### 易于使用
+### 2. 易于使用
 
 通过代码优于配置的策略，Gulp 让简单的任务简单，复杂的任务可管理。
 
 而且对ant，rake，make等了解的人非常容易上手
 
-### 构建快速
+### 3. 构建快速
 
 利用 Node.js stream的威力，你可以快速构建项目并减少频繁的 IO 操作。
 
-而且gulp的核心代码可以高效利用你所有核的cpu，高效运行，尤其是大文件处理
+而且gulp的核心代码可以高效利用你所有核的cpu，高效运行，尤其是大文件处理，后面会讲到
 
-###  插件机制
+###  4. 插件机制
 
 Gulp 严格的插件指南确保插件如你期望的那样简洁高质得工作。
 
-### 易于学习
+### 5. 易于学习
 
 通过最少的 API，掌握 Gulp 毫不费力
 
@@ -146,13 +148,15 @@ Gulp 严格的插件指南确保插件如你期望的那样简洁高质得工作
 
 ### 总结
 
-这里说了gulp的各种好处，它通用，高效，使用简单，学习成本低，总之，我就是要告诉你，它是非常好的构建工具，而且是长久看好的。
+这里说了gulp的各种好处，它通用，高效，使用简单，学习成本低，总之，我就是要告诉你：它是非常好的构建工具，而且是长久看好的。
 
 它也有缺点，这样说也不太合适，更准确的说，它是一个通用构建工具，所以在构建实践上，需要写的人有好的实践
 
-像fib3这样的，只是基于比较好的构建实践而已，其他方面不是能和gulp相提并论的。
+像fib3这样的，只是基于比较好的构建实践而已，其他方面是不能和gulp相提并论的。
 
 ## gulp快速入门
+
+都说得来个hello world
 
 ### hello world
 
@@ -197,9 +201,11 @@ then run
 gulp stuq
 ```
 
+这里的stuq是作业名称
+
 自己定义一个task就是这么简单
 
-### 依赖
+### 依赖作业
 
 ```
 gulp.task('default',['watch'],function() {
@@ -207,7 +213,7 @@ gulp.task('default',['watch'],function() {
 });
 ```
 
-这里的task有3个参数，
+这里的task有3个参数
 
 default是方法名称，只有default比较奇怪，会默认调用。
 
@@ -216,7 +222,7 @@ default是方法名称，只有default比较奇怪，会默认调用。
 ['watch']这是依赖的作业列表，它们是由顺序的，按数组顺序依次执行
 第三个参数是成功执行完上面的依赖作业后执行的回调函数
 
-这里要强大，依赖作业数组里的都执行完了，才会执行第三个参数，即当前作业具体内容
+这里要强调，依赖作业数组里的都执行完了，才会执行第三个参数，即当前作业具体内容
 
 
 我们不妨改一下，看看多个依赖如何定义
@@ -262,9 +268,9 @@ src里所有js，经过处理1，处理2，然后压缩变成min.js,中间的处
 
 ### 总结
 
-- 每一个作业都是独立，定义为task
-- 通过stream的机制，上一个的输出，作为下一个的输入
-- 通过pipe方法组装task，完成我们想要的业务逻辑
+- 1）每一个作业都是独立，定义为task
+- 2）通过stream的机制，上一个的输出，作为下一个的输入
+- 3）通过pipe方法组装task，完成我们想要的业务逻辑
 
 
 至此，task相关的概念都讲完了，你已经会使用gulp了，找几个插件就足以工作了
@@ -319,7 +325,7 @@ git clone https://github.com/weui/weui.git
 npm install
 ```
 
-至此就准备玩了，下面看一下gulpfile.js
+至此就准备完了，下面看一下gulpfile.js
 
 ### 看一下它有哪些tasks
 
@@ -385,10 +391,10 @@ gulp default
 
 这里面值得说明的是
 
-- 这是最简单的task定义，无任何依赖作业
-- 作业里面使用nodejs写的yargs模块，用户处理cli参数
+- 1) 这是最简单的task定义，无任何依赖作业
+- 2) 作业里面使用nodejs写的yargs模块，用户处理cli参数
 
-比如此时执行`gulp -s`后者`gulp default -s`
+比如此时可以执行`gulp -s`后者`gulp default -s`
 
 ```
 ➜  weui git:(master) ✗ gulp -s
@@ -451,7 +457,7 @@ btw：这里的`if (yargs.w) {`怎么看逻辑都怪怪的，既然有无w都执
 
 ### server
 
-server一看就知道是启动服务器，一般前端开发，都是起一个服务器在浏览器里测试
+server task一看就知道是启动服务器，一般前端开发，都是起一个服务器在浏览器里测试
 
 所以还是比较容易理解
 
@@ -485,9 +491,9 @@ gulp.task('server', function () {
 
 [browserSync](http://www.browsersync.io/docs/gulp/)是一个nodejs模块，专门做的是livereload的事儿，也就是说，我们在编辑器里写代码，保存了，文件就会变动，文件变动了就会触发操作系统的监控事件，这时让浏览器刷新
 
-于是，代码变量，不用刷新浏览器就能看到效果。。。
+于是，代码变了，不用刷新浏览器就能看到效果。。。
 
-这其实就livereload...
+这其实就是传说中得livereload...
 
 又可以偷懒了，祭奠f5吧！！！
 
@@ -502,9 +508,9 @@ http://people.apache.org/~pmuellr/weinre-docs/latest/
 
 整个server就是browserSync提供的3个功能
 
-- 起了一个server
-- 支持livereload
-- 自动打开网页
+- 1）起了一个server
+- 2）支持livereload
+- 3) 自动打开网页
 
 还不错吧，下面看一下更实用的一个task： watch监控
 
@@ -521,10 +527,10 @@ gulp.task('watch', function () {
 
 watch其实就干了2件事儿
 
-- 如果'src/**/*.less'变动，执行styles task
-- 如果'src/example/**/*.{html,js}'变动，先执行'source' task，然后livereload通知浏览器
+- 1）如果'src/**/*.less'变动，执行styles task
+- 2）如果'src/example/**/*.{html,js}'变动，先执行'source' task，然后livereload通知浏览器
 
-大家伙主要了解文件变动能干坏事即可，其他可自由发挥
+大家伙只要了解文件变动能干坏事即可，其他可自由发挥
 
 如果gulp内置的watch无法满足，你还可以使用gulp-watch这个单独模块，哈哈，如果有兴趣还可以研究一下操作系统底层监控文件变动接口，有点意思
 
@@ -545,15 +551,18 @@ release只是依赖styles task，相当于styles的别名。
 - 如果js是用coffeescript，typescript写的呢？
 - 如果css是用less，sass，stylus写的呢？
 
-都是一样的思路，编译成js或css，然后发布
+其实都是一样的思路，编译成js或css，然后发布
 
-这些预处理，让开发方便，高效的同时，也增加了前端的复杂度，真是老子那句话
+这些预处理器，让开发方便，高效的同时，也增加了前端的复杂度，真是老子那句话
 
 福兮祸所伏，祸兮福所倚...
 
-阿门。。。阿弥托佛
+阿门。。。
+阿弥托佛。。。
 
 ### source
+
+下面一个source task
 
 上面的都比较简单，只是作业定义和作业依赖定义而已，下面看一下真实的流式处理
 
@@ -579,7 +588,7 @@ gulp.task('source', function(){
         .pipe(gulp.dest(dist))
 ```
 
-然后，它又pipe一个，仅仅是为了表示顺序，无上下文件传递关系（偷懒做法而已，不可取）
+然后，它又pipe一个，仅仅是为了表示顺序，无上下文传递关系（偷懒做法而已，不可取）
 
 这样写起来是不是非常简单？
 
@@ -677,15 +686,15 @@ part1
 
 整体是分了3个阶段
 
-- 编译less和生成sourcemap
-- 压缩minify
-- 触发livereload
+- 1）编译less和生成sourcemap
+- 2）压缩minify
+- 3）触发livereload
 
 ### 实战总结
 
 至此，我们就讲完了所有gulpfile里的内容，以及每个task的细节
 
-结论是：这是一个比较典型的gulp项目
+结论是：这是一个比较典型的gulp项目，还不错
 
 当然它也不是非常完美，比如作业依赖可以优化、代码校验检测、release没有reversion处理等
 
@@ -727,6 +736,7 @@ part1
 
 http://nodejs.org/api/stream.html
 
+官方文档解释
 
 A stream is an abstract interface implemented by various objects in Node.js. For example a request to an HTTP server is a stream, as is stdout. Streams are readable, writable, or both. All streams are instances of EventEmitter
 
@@ -764,7 +774,7 @@ ps -ef|grep boot|awk '{print $2}'|xargs kill -9
 ```
 
 - ps -ef查看进程
-- grep boot是过来进程里的和boot相关的所有进程
+- grep boot是过滤进程里的和boot相关的所有进程
 - awk '{print $2}' 取出进程号
 - xargs kill -9 杀掉该进程
 
@@ -799,7 +809,7 @@ Stream在nodejs中是EventEmitter的实现，并且有多种实现形式，例�
 连著名request模块都支持stream
 
 
-为什么使用Stream
+为什么使用Stream呢？
 
 - node中的I/O是异步的
 - pipe
@@ -810,7 +820,7 @@ Stream在nodejs中是EventEmitter的实现，并且有多种实现形式，例�
 
 nodejs里有五种基本的Stream：readable，writable，transform，duplex，and "classic” 
 
-时间原因，具体使用请自己查阅api
+时间原因，具体使用请自己查阅api文档
 
 https://github.com/substack/stream-handbook
 
@@ -820,7 +830,9 @@ ruby作者，松本行弘，上半年基本没干啥，写了一个叫streem的�
 
 In Streem, a simple cat program looks like this:
 
+```
 stdin | stdout
+```
 
 prototype of stream based programming language
 
@@ -887,18 +899,17 @@ https://github.com/slushjs/slush
 
 还是不错的，可惜没有红起来，可能时日尚短吧
 
-
 ## 全文总结
 
 gulp是一个构建工具，一个streaming构建工具，一个nodejs写的构建工具
 
-- 每个操作都是是独立作业task
-- 作业依赖定义非常简单，决定执行顺序
-- 通过pipe组装tasks，完成业务逻辑处理
+- 1) 每个操作都是是独立作业task
+- 2) 作业依赖定义非常简单，决定执行顺序
+- 3) 通过pipe组装tasks，完成业务逻辑处理
 
 gulp的核心stream
 
-什么是流式（重要的事情，大声喊三遍）
+先理解什么是流式（重要的事情，大声喊三遍）
 
 ```
 上一个的输出，是下一个的输入
@@ -912,10 +923,164 @@ gulp的核心stream
 
 最后让我们来展望一下美好的未来：
 
+```
 gulp是前端世界的主流构建工具，是大多数开源项目的选择，你值得拥有
+```
 
 另外公布一下weui未来会有reactjs版本，还是值得期待的。
 
 谢谢大家，今天讲的内容就到这里，如果有什么讲的不对的、不合理的，请不吝赐教，共同学习
 
 大家有任何不明白或者想提问的可以随时回复到StuQ微信公众号后台，我会在答疑阶段统一回答
+
+
+## FAQ
+
+### 1.
+
+请问将gulp部署到生产环境上，开启watch去时时监听每周升级一次，通过rsync过去的文件去自动检测执行。还是每个开发人员都装gulp执行后上传处理过的文件，如果都不是怎么处理？
+
+“开启watch去时时监听”，为啥不用later这样模块去定时处理呢？
+
+另外每个开发都可以随便更新，显然是不靠谱的
+
+
+### 2.
+
+请问gulp的任务都是同步顺序执行的嘛？流式是不是就代表无法异步？为什么老师还提到可以异步呢？
+
+这个讲的原因是nodejs里的每个函数都是异步，所以pipe的好处相当于顺序执行了。
+
+gulp里的pipe链上的task都是同步顺序执行的。但pipe链外的不好说
+
+
+### 3.
+
+一个gulp项目有很多的插件所以nodemodule就有很多…然后ide打开跟占用资源 项目都用的是统一的gulp插件 如何在不同的项目中调用本地的 不需要每个项目下面都安装
+
+1)区分产品模式和开发模式，开发模式依赖的占资源是没办法的
+
+2）如何在不懂项目调试本地的，可以采用软连接的方式，sails里就是这样用的，所有模块都是sails的nodemodules里，然后连接到当前项目里
+
+
+
+### 4.
+
+src里所有js，经过处理1，处理2，然后压缩变成min.js,中间的处理pipe可以1步，也可以是n步 请问关于上面的“然后压缩变成min.js”，必须是min,js么？
+
+这里使用了rename插件，可以随意改的，哈哈
+
+
+### 5. 
+
+gulp.task(‘release’, [‘styles’]); ``` release只是依赖styles task，相当于styles的别名。 请问为什么要起 style这样的一个别名来？好奇怪呀
+
+语义更明确而已，无他
+
+### 6. 
+
+web ui层选型，weui、ionic、react ，怎么做选型比较呢？
+
+看做什么，微信开发肯定weui，打包app可以考虑ionic这种hybrid方式
+
+react只是view层的解决方案，和移动、pc无关，所以weui才计划出reactjs版本
+
+### 7.
+
+gulp是如何利用多核的？
+
+orchestrator这是gulp底层依赖的task相关的核心库，它定义了task执行方式和依赖，而且支持最大可能的并发
+
+见 https://github.com/orchestrator/orchestrator
+
+
+### 8.
+
+根据老师讲的流式，上一个输出是下一个的输入，那么流式是不是可以理解为就像jquery的链式操作一样？
+
+类似，相当于pipe调用一次都返回当前对象，这样理解也可以，但输出输入这个就不太好理解
+
+链式操作都是在当前对象上下文的
+
+
+### 9.
+
+D:\app\weui>gulp -s module.js:338 throw err; ^ Error: Cannot find module 'lodash' at Function.Module._resolveFilename (module.js:336:15) at Function.Module._load (module.js:286:25) at Module.require (module.js:365:17) at require (module.js:384:17) at Object.<anonymous> (D:\app\weui\node_modules\browser-sync\lib\hooks.js:3:20) at Module._compile (module.js:434:26) at Object.Module._extensions..js (module.js:452:10) at Module.load (module.js:355:32) at Function.Module._load (module.js:310:12) at Module.require (module.js:365:17) at require (module.js:384:17)
+
+缺少依赖模块，安装上就好了
+
+另外不建议用windows开发nodejs，问题不好说，我也不太熟悉  
+
+### 10.
+
+我比较讨厌Yeoman（YO），好在有一个替代品slush 请问 为什么“讨厌Yeoman（YO）”？
+
+个人习惯而已，一般我都自己写生成器，又不能，一个生成器搞的那么复杂，至于么？
+
+
+### 11.
+
+请问如何调试gulp任务
+
+和nodejs调试一样
+
+- node debug
+- node-inspector
+- tdd/bdd
+
+node-debug 三法三例之node debugger + node inspector
+
+https://cnodejs.org/topic/5463f6e872f405c829029f7e
+
+其实webstorm，vs code都支持的
+
+### 12.
+
+不太懂具体的应用场景，在多人合作的项目里这种构建工具应该什么时候执行呢？准备提测上线的时候统一执行一下？还是开发的过程中每一个人都在执行？如果不是每个人都即时在用的话，watch存在的意义是什么呢？
+
+看你的团队分工，是否真的前后端分离，如果不分离就每个人都的用，如果分离，前端组自动化生成的，放到cdn上，后端只要负责用就好了
+
+watch只在开发场景用，而且你看
+
+```
+npm install --save-dev gulp-xxx
+```
+
+
+### 13.
+
+请问gulp和webpack区别和联系？
+
+2者的功能是一样的，插件也都差不多，目前看到的区别都是使用方式、扩展等方面的
+
+gulp是标准、通用构建工具，上面基本都讲了，使用和定义、扩展都非常简单，比webpack简单的多
+
+webpack是新贵，支持loader和plugin机制，非常强大，而且可以把所有资源bundle到一起，目前react、babel等都使用其编译，其他细节，还需要研究，目前我了解的就这些
+
+### 14.
+
+请问sourcemaps是干嘛用的？
+
+调试的，自己查
+
+### 15.
+
+请问推荐学习steam相关教程
+
+文章中有讲到
+
+https://github.com/substack/stream-handbook
+
+有中文版的，自己搜吧
+
+### 16.
+
+桑大，流式和buffer的实际区别有哪些啊？没有适应过buffer
+
+不是一样的东西，buffer可理解成把大象切块，放冰箱
+
+流式，主要是pipe处理，多了事件监控而已，但底层也是用的buffer处理大文件的
+
+@end
+
+目前就这些问题，回答比较仓促，如有问题欢迎私聊
