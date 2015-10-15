@@ -749,6 +749,8 @@ gulp有非常多插件，它可以做的更多,比如本文使用gulp把markdown
 
 - i5ting_toc
 - gulp-trans
+- 结合shelljs调用shell命令
+
 
 ### shipit
 
