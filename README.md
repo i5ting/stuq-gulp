@@ -20,6 +20,8 @@
 
 那么什么是构建工具呢？
 
+构建工具本质就是为了自动化构建，解放程序员、提供程序员效率的工具
+
 我们来举个例子，最早的make，因为每次都cc编译，太恶心了，而且当文件特别多的时候，编译速度又慢下来，能不能按需编译，增量编译？
 
 make是通过makefile文件来描述源程序之间的相互关系并自动维护编译工作的
@@ -34,13 +36,14 @@ make是通过makefile文件来描述源程序之间的相互关系并自动维�
 
 它们的共同特点
 
-- 基于task
-- task有串行，并行等控制方式
+- 基于task，定义简单
+- task有串行，并行，作业依赖等控制方式
 - 通过xxxfile来定义task
 
 如此看来，nodejs的构建系统也应该是这样的，可以说gulp是node世界里和上面几个构建工具最像的一个，它们太像了，以至于学习起来特别简单
 
 其实上面还提了一个streaming，是流式的意思，后面讲原理的时候会深入讲解
+
 
 ## 入门指南
 
@@ -48,31 +51,21 @@ make是通过makefile文件来描述源程序之间的相互关系并自动维�
 
 ### 1. 安装 gulp：
 
+建议全局安装
+
 ```sh
 $ npm install --global gulp
 ```
 
-全局的意思，很简单
-
-```sh
-$ npm install gulp
-```
-
-就会在当前目录的node_modules下安装gulp模块。
-
-作为项目的开发依赖（devDependencies）安装：
+但最多的是作为项目的开发依赖（devDependencies）安装：
 
 ```sh
 $ npm install --save-dev gulp
 ```
 
+### 2. 创建gulpfile
 
-```sh
-$ npm install --save gulp
-```
-
-
-### 2. 在项目根目录下创建一个名为 `gulpfile.js` 的文件：
+在项目根目录下创建一个名为 `gulpfile.js` 的文件：
 
 ```js
 var gulp = require('gulp');
@@ -81,6 +74,10 @@ gulp.task('default', function() {
   // 将你的默认的任务代码放在这
 });
 ```
+
+gulpfile和makefile、build.xml等是类似的，定义task的地方。
+
+定义好task，下面运行一些
 
 ### 3. 运行 gulp：
 
@@ -100,22 +97,40 @@ $ gulp
 
 Gulp 和 Grunt 类似。但相比于 Grunt 的频繁的 IO 操作，Gulp 的流操作，能更快地完成构建。
 
-grunt写起来比较恶心，可读性非常差。。。。
+grunt是基于dsl声明式写法，出来的早，但写起来比较恶心，可读性非常差。。。。
 
-nodejs里sails的因为grunt被鄙视，ionic里也是，ionic现在也是gulp的
+nodejs里sails的因为基于grunt被鄙视，ionic里也是，好在ionic现在也是gulp的
 
 鄙视完grunt，就该吹吹gulp了
 
+话说2014年gulp火了之后，很快风头就盖过了grunt，好不好，试了才知道
+
 ## why gulp？
+
+
+前端本身就对js非常了解，gulp可以说是plain js，语法都再简单不过，所以大家比较容易接受
+
+### 基于nodejs
+
+而且基本nodejs的小而美哲学，写gulp task是件很愉快的事儿
+
+而且还可以结合nodejs世界里最好的包管理器npm，写cli或者模块特别简单
+
+而且可以写c/c++ addon，给你无限可能
+
+而且还有shelljs这样的库，结合shell，给你无限可能
 
 ### 易于使用
 
 通过代码优于配置的策略，Gulp 让简单的任务简单，复杂的任务可管理。
 
+而且对ant，rake，make等了解的人非常容易上手
+
 ### 构建快速
 
-利用 Node.js 流的威力，你可以快速构建项目并减少频繁的 IO 操作。
+利用 Node.js stream的威力，你可以快速构建项目并减少频繁的 IO 操作。
 
+而且gulp的核心代码可以高效利用你所有核的cpu，高效运行，尤其是大文件处理
 
 ###  插件机制
 
@@ -123,13 +138,25 @@ Gulp 严格的插件指南确保插件如你期望的那样简洁高质得工作
 
 ### 易于学习
 
-通过最少的 API，掌握 Gulp 毫不费力，构建工作尽在掌握：如同一系列流管道。
+通过最少的 API，掌握 Gulp 毫不费力
+
+这得益于gulp的设计，api简单，调用关系和依赖清晰，当然如果理解linux 管道或者其他类似的构建工具会容易
+
+而且每个任务都拆分成一个task，结构清晰，利用stream和pipe写法，组成task，也是非常容易学习的。
+
+### 总结
+
+这里说了gulp的各种好处，它通用，高效，使用简单，学习成本低，总之，我就是要告诉你，它是非常好的构建工具，而且是长久看好的。
+
+它也有缺点，这样说也不太合适，更准确的说，它是一个通用构建工具，所以在构建实践上，需要写的人有好的实践
+
+像fib3这样的，只是基于比较好的构建实践而已，其他方面不是能和gulp相提并论的。
 
 ## gulp快速入门
 
 ### hello world
 
-create gulpfile and run hello world demo
+创建gulpfile.js
 
 ```
 var gulp = require('gulp');
@@ -140,22 +167,26 @@ gulp.task('default', function() {
 
 ```
 
-then run
+然后只需执行命令
 
 ```
 gulp
 ```
 
+定义作业就是这么加单
+
+- default是名字
+- 后面的匿名函数是它的实现
 
 ### 自定义作业
 
-custom task with name compress
+custom task with name stuq
 
 ```
 var gulp = require('gulp');
 
-gulp.task('compress', function() {
-    console.log('hello world')
+gulp.task('stuq', function() {
+    console.log('hello stuQ!')
 });
 
 ```
@@ -163,7 +194,7 @@ gulp.task('compress', function() {
 then run
 
 ```
-gulp compress
+gulp stuq
 ```
 
 自己定义一个task就是这么简单
@@ -178,12 +209,17 @@ gulp.task('default',['watch'],function() {
 
 这里的task有3个参数，
 
-default是方法名称，只有default比较奇怪，会默认调用。相当于c里的main方法
+default是方法名称，只有default比较奇怪，会默认调用。
+
+相当于c里的main方法
+
 ['watch']这是依赖的作业列表，它们是由顺序的，按数组顺序依次执行
 第三个参数是成功执行完上面的依赖作业后执行的回调函数
 
+这里要强大，依赖作业数组里的都执行完了，才会执行第三个参数，即当前作业具体内容
 
-改一下：
+
+我们不妨改一下，看看多个依赖如何定义
 
 ```
 gulp.task('default',['watch','task_2','task_3'],function() {
@@ -191,11 +227,11 @@ gulp.task('default',['watch','task_2','task_3'],function() {
 });
 ```
 
-换种写法而已
+是不是很简单？放心，这只是入门，下面看一下流式处理
 
 ### 流式处理
 
-比如混淆压缩js，使用uglify插件
+比如混淆压缩js，使用gulp-uglify插件
 
 ```
 var gulp = require('gulp');
@@ -212,15 +248,18 @@ gulp.task('default', function() {
 - dest是输出
 
 
-pipe是管道的意思，也是stream里核心概念，也就是说上一个的输入，是下一个的输入。
+pipe是管道的意思，也是stream里核心概念，也就是说：上一个的输入，是下一个的输入。
 
-和linux里的pipe是一样的。
+src里所有js，经过处理1，处理2，然后压缩变成min.js,中间的处理pipe可以1步，也可以是n步
 
-比如src里所有js，经过处理1，处理2，然后压缩变成min.js,中间的处理可以1步，也可以是n步
+反正第一步处理的结果是第二步的输入，以此类推，就像生产线一样，每一步都是一个task是不是很好理解呢？
 
-反正第一步处理的结果是第二步，以此类推，就像生产线一样，每一步都是一个task是不是很好理解呢？
+每个独立操作单元都是一个task，使用pipe来组装tasks
 
-是时候总结一下了
+于是gulp就变成了基于task的积木式的工具
+
+好吧，是时候总结一下了
+
 ### 总结
 
 - 每一个作业都是独立，定义为task
@@ -235,15 +274,27 @@ pipe是管道的意思，也是stream里核心概念，也就是说上一个的�
 
 大家有任何不明白或者想提问的可以随时回复到StuQ微信公众号后台，我会在答疑阶段统一回答
 
-下面看以项目实战
+
+下面看以项目实战，以目前最火的微信前端组的weui项目为例，看看gulp是如何被使用的（其实如何使用gulp构建前端项目）
 
 ## 项目实战
 
-https://github.com/weui/weui
+先说一下weui是一个什么项目：
 
-WeUI 为微信 Web 服务量身设计
+[WeUI](https://github.com/weui/weui) 为微信 Web 服务量身设计的h5框架
 
 WeUI是一套同微信原生视觉体验一致的基础样式库，为微信 Web 开发量身设计，可以令用户的使用感知更加统一。包含button、cell、dialog、toast、article、icon等各式元素。
+
+它是使用less编写，最终编译成css，压缩成weui.min.css的，当然这里面还使用了一下比较好的开发实践
+
+- web server
+- livereload
+- watch实时监控
+- less：css预处理器
+- minify 压缩
+- sourcemap 生成
+
+下面我们来扒光它
 
 ### 准备工作
 
@@ -270,9 +321,9 @@ npm install
 
 至此就准备玩了，下面看一下gulpfile.js
 
-### 看一下它有哪些task
+### 看一下它有哪些tasks
 
-查看命令是`gulp -T`
+看一下它有哪些tasks，查看命令是`gulp -T`
 
 ```
 ➜  weui git:(master) ✗ gulp -T
@@ -292,11 +343,11 @@ npm install
 
 大概有7个task，其中styles和release是有依赖作业的。
 
-也就是说，整个项目目前的task比较适合讲解，而且是腾讯的项目，大家应该会比较认可一些
+也就是说，整个项目目前的task比较少，比较适合讲解，而且是腾讯公司的项目，大家应该会比较认可一些
 
-ok，下面我们分别开一下每个task
+ok，下面我们分别看一下每个task
 
-上面讲过，所有的task定义在gulpfile(大小写无关)里，那么我就结合源码看一下gulpfile.js的task是如何定义，以及如何应用的
+上面讲过，所有的task定义在gulpfile.js里，那么我们就结合源码，看一下gulpfile.js的task是如何定义，以及如何应用的
 
 ### default
 
@@ -368,6 +419,8 @@ gulp default
 
 说明server是一个task，这里的start就相当于call或者invoke某个task的方法。
 
+注：yargs是一个nodejs模块，目前最好的解析cli参数的库
+
 当然，如果这样，是不是太简单了呢？而且亲，你还有2个参数没说呢
 
 是的
@@ -378,7 +431,7 @@ gulp default
 这里要说的就是一个开发惯例，
 
 `-p`很好理解，就是httpserver的短口port，如果指定是7070那就是7070，如果没指定就是8080
-给程序员自己定制的空间，谁还没有个端口定义权利呢？
+给程序员自己定制的空间，谁还没有个端口自定义权利呢？
 
 `-w`比较特殊，这里的w是watch的意思，就是监控某个文件或目录，只要有变化就触发xx动作，一般用于编译，比如coffee，typescript，less，sass等
 
@@ -400,7 +453,9 @@ btw：这里的`if (yargs.w) {`怎么看逻辑都怪怪的，既然有无w都执
 
 server一看就知道是启动服务器，一般前端开发，都是起一个服务器在浏览器里测试
 
-所以还是比较容易理解，看代码
+所以还是比较容易理解
+
+看代码
 
 ```
 gulp.task('server', function () {
@@ -420,7 +475,7 @@ gulp.task('server', function () {
 });
 ```
 
-重点
+代码里的几个关键词
 
 - browserSync
 - server
@@ -431,6 +486,8 @@ gulp.task('server', function () {
 [browserSync](http://www.browsersync.io/docs/gulp/)是一个nodejs模块，专门做的是livereload的事儿，也就是说，我们在编辑器里写代码，保存了，文件就会变动，文件变动了就会触发操作系统的监控事件，这时让浏览器刷新
 
 于是，代码变量，不用刷新浏览器就能看到效果。。。
+
+这其实就livereload...
 
 又可以偷懒了，祭奠f5吧！！！
 
@@ -469,7 +526,11 @@ watch其实就干了2件事儿
 
 大家伙主要了解文件变动能干坏事即可，其他可自由发挥
 
+如果gulp内置的watch无法满足，你还可以使用gulp-watch这个单独模块，哈哈，如果有兴趣还可以研究一下操作系统底层监控文件变动接口，有点意思
+
 ### release
+
+release是发布最终css的task
 
 ```
 gulp.task('release', ['styles']);
@@ -479,7 +540,18 @@ release只是依赖styles task，相当于styles的别名。
 
 值得说明的是，weui是less写的，需要编译成css，然后最终发布的是css文件
 
-具体见流式处理source task
+那么，
+
+- 如果js是用coffeescript，typescript写的呢？
+- 如果css是用less，sass，stylus写的呢？
+
+都是一样的思路，编译成js或css，然后发布
+
+这些预处理，让开发方便，高效的同时，也增加了前端的复杂度，真是老子那句话
+
+福兮祸所伏，祸兮福所倚...
+
+阿门。。。阿弥托佛
 
 ### source
 
@@ -493,21 +565,21 @@ gulp.task('source', function(){
 });
 ```
 
-回归一下
+回故一下，上面讲的流式内容
 
 - src是输入
 - dest是输出
 - pipe是管道的意思，也是stream里核心概念，也就是说上一个的输入，是下一个的输入。
 
 
-src里所有不是less的都丢到dist目录
+这代码里的src里的，所有不是less的文件，都丢到dist目录
 
 ```
     gulp.src('src/example/**/*.!(less)', option)
         .pipe(gulp.dest(dist))
 ```
 
-然后，它又pipe一个，仅仅是为了表示顺序，无上下文件传递关系
+然后，它又pipe一个，仅仅是为了表示顺序，无上下文件传递关系（偷懒做法而已，不可取）
 
 这样写起来是不是非常简单？
 
@@ -517,6 +589,7 @@ src里所有不是less的都丢到dist目录
 
 ### styles
 
+下面是关于样式处理的task
 
 ```
 gulp.task('styles', ['source'], function () {
@@ -549,7 +622,7 @@ gulp.task('styles', ['source'], function () {
 这是整个gulpfile里最长的一个task
 
 
-下面分析一下
+下面拆成2部分分析一下
 
 - 依赖source，执行完source，然后编译less
 - 编译的less有例子和具体要发布的weui.css
@@ -608,11 +681,13 @@ part1
 - 压缩minify
 - 触发livereload
 
-至此，我们就讲完了所有gulpfile里的内容，这是一个比较典型的gulp项目
+### 实战总结
+
+至此，我们就讲完了所有gulpfile里的内容，以及每个task的细节
+
+结论是：这是一个比较典型的gulp项目
 
 当然它也不是非常完美，比如作业依赖可以优化、代码校验检测、release没有reversion处理等
-
-
 
 下面简单看一下package.json
 
@@ -644,25 +719,44 @@ part1
 
 执行npm test即可发布最终css。
 
+有人说gulp只是一些命令，没啥技术含量，大家先笑笑，一会我们就来讲讲
+
 下面看一下gulp的核心原理：nodejs stream
+
 ## 核心：stream
 
 http://nodejs.org/api/stream.html
 
 
+A stream is an abstract interface implemented by various objects in Node.js. For example a request to an HTTP server is a stream, as is stdout. Streams are readable, writable, or both. All streams are instances of EventEmitter
+
+
+Stream是nodejs各种对象实现的抽象接口。
+
+比如一个http server的请求是一个stream，stdout也是一个。
+
+Streams可读、可写，或者兼有的。
+
+所有的stream对象都是EventEmitter的实例
+
+
+好理解么？
+
+不好理解，还是从流式理解吧~
 
 ### 什么是流式
 
-上一个的输入，是下一个的输入
+上一个的输出，是下一个的输入
 
-上一个的输入，是下一个的输入
+上一个的输出，是下一个的输入
 
-上一个的输入，是下一个的输入
-
-它和linux pipe是一样的，举例
+上一个的输出，是下一个的输入
 
 ### linux pipe
 
+流式和linux pipe是一样的（也可能是最早的起源）
+
+举例
 
 ```
 ps -ef|grep boot|awk '{print $2}'|xargs kill -9
@@ -672,6 +766,8 @@ ps -ef|grep boot|awk '{print $2}'|xargs kill -9
 - grep boot是过来进程里的和boot相关的所有进程
 - awk '{print $2}' 取出进程号
 - xargs kill -9 杀掉该进程
+
+可以看出，上一个的输出，是下一个的输入
 
 下面理解一下nodejs里的stream
 
@@ -707,11 +803,15 @@ Stream在nodejs中是EventEmitter的实现，并且有多种实现形式，例�
 - node中的I/O是异步的
 - pipe
 - 基于buffer节省内存，适合处理大文件
-- 有监控事件
+- 有事件监控
 
+### 推荐阅读
 
-有五种基本的Stream：readable，writable，transform，duplex，and "classic” 。（具体使用请自己查阅api）
+nodejs里有五种基本的Stream：readable，writable，transform，duplex，and "classic” 
 
+时间原因，具体使用请自己查阅api
+
+https://github.com/substack/stream-handbook
 
 ### 八卦更多
 
@@ -728,20 +828,16 @@ prototype of stream based programming language
 https://github.com/matz/streem
 
 ### orchestrator
+
 下面介绍gulp的核心
 
 orchestrator这是gulp底层依赖的task相关的核心库，它定义了task执行方式和依赖，而且支持最大可能的并发
 
-本身stream对大文件读写就有非常棒，再加上上面说的特性，使得gulp流行是必然的。
+gulp的高效即来源于此
 
+本身stream对大文件读写就非常棒，再加上上面说的种种特性，使得gulp流行是必然的。
 
 https://github.com/orchestrator/orchestrator
-
-
-### 推荐阅读
-
-https://github.com/substack/stream-handbook
-
 
 ## 更多实践
 
@@ -749,7 +845,11 @@ gulp有非常多插件，它可以做的更多
 
 ### i5ting_toc
 
-比如本文是使用markdown写的，然后使用gulp把markdown生成html，并push到git pages上去
+你好奇本文是如何生成toc和发布到git pages上的么？
+
+这竟然也和gulp有关系？
+
+是的，本文是使用markdown写的，然后使用gulp把markdown生成html，并push到git pages上去
 
 
 实现思路
@@ -765,26 +865,26 @@ gulp有非常多插件，它可以做的更多
 https://cnodejs.org/topic/5464c7fe88b869cc33a97985
 
 
-
 ### shipit
 
-Shipit nodejs写的自动化部署工具，是基于gulp的
+Shipit nodejs写的自动化部署工具，是基于gulp的，很不错
+
+群里fundon大神的项目都是使用shipit部署的。
 
 https://github.com/shipitjs/shipit
 
 
 ### slush
 
+我比较讨厌Yeoman（YO），好在有一个替代品slush
+
+官方介绍
+
 The streaming scaffolding system - Gulp as a replacement for Yeoman
 
 https://github.com/slushjs/slush
 
-
-## 推荐阅读
-
-https://github.com/gulpjs/gulp/blob/master/docs/README.md
-
-https://github.com/lisposter/gulp-docs-zh-cn
+还是不错的，可惜没有红起来，可能时日尚短吧
 
 
 ## 全文总结
@@ -799,15 +899,15 @@ gulp的核心stream
 
 什么是流式（重要的事情，大声喊三遍）
 
-上一个的输入，是下一个的输入
+上一个的输出，是下一个的输入
 
-上一个的输入，是下一个的输入
+上一个的输出，是下一个的输入
 
-上一个的输入，是下一个的输入
+上一个的输出，是下一个的输入
 
+好了，你已经是gulp高手了
 
-
-展望一下：
+最后让我们来展望一下美好的未来：
 
 gulp是前端世界的主流构建工具，是大多数开源项目的选择，你值得拥有
 
