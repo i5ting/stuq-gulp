@@ -745,11 +745,25 @@ https://github.com/substack/stream-handbook
 
 ## 更多实践
 
-gulp有非常多插件，它可以做的更多,比如本文使用gulp把markdown生成html，并push到git pages上去
+gulp有非常多插件，它可以做的更多
 
-- i5ting_toc
-- gulp-trans
-- 结合shelljs调用shell命令
+### i5ting_toc
+
+比如本文是使用markdown写的，然后使用gulp把markdown生成html，并push到git pages上去
+
+
+实现思路
+
+- jquery写好toc插件，https://github.com/i5ting/i5ting_ztree_toc
+- 写生成器，把markdown按照toc模板生成html，https://github.com/i5ting/tocmd.npm
+- 写gulp来构建，使用gulp-gh-pages和shelljs来自动生成
+
+更多参见
+
+如何使用gulp来把markdown生成html文档并上传到git pages上
+
+https://cnodejs.org/topic/5464c7fe88b869cc33a97985
+
 
 
 ### shipit
