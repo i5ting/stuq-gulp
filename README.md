@@ -300,7 +300,7 @@ WeUI是一套同微信原生视觉体验一致的基础样式库，为微信 Web
 
 首先看目录结构
 
-![](img/1/png)
+![](img/1.png)
 
 - 有package.json，说明它是一个node模块或者说它依赖了node模块
 - 有gulpfile.js，说明它是使用gulp作为构建工具的。
